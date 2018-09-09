@@ -610,6 +610,9 @@ class IPAddress(ChangeLoggedModel, CustomFieldModel):
         if self.address:
             # Infer address family from IPAddress object
             self.family = self.address.version
+        if settings.AUTO_PREFIX_CREATE and not Prefix.objects.filter(prefix__net_contains=str(self.address),
+                                                                 prefix__net_mask_length=self.address.prefixlen):
+            Prefix.objects.create(prefix=self.address.cidr)
         super(IPAddress, self).save(*args, **kwargs)
 
     def to_csv(self):

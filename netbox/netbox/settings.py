@@ -38,6 +38,7 @@ for setting in ['ALLOWED_HOSTS', 'DATABASE', 'SECRET_KEY']:
 
 # Import optional configuration parameters
 ADMINS = getattr(configuration, 'ADMINS', [])
+AUTO_PREFIX_CREATE = getattr(configuration, 'AUTO_PREFIX_CREATE', False)
 BANNER_BOTTOM = getattr(configuration, 'BANNER_BOTTOM', '')
 BANNER_LOGIN = getattr(configuration, 'BANNER_LOGIN', '')
 BANNER_TOP = getattr(configuration, 'BANNER_TOP', '')

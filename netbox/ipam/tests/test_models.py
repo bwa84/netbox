@@ -59,3 +59,17 @@ class TestIPAddress(TestCase):
         IPAddress.objects.create(vrf=vrf, address=netaddr.IPNetwork('192.0.2.1/24'))
         duplicate_ip = IPAddress(vrf=vrf, address=netaddr.IPNetwork('192.0.2.1/24'))
         self.assertRaises(ValidationError, duplicate_ip.clean)
+
+    @override_settings(AUTO_PREFIX_CREATE=False)
+    def test_prefix_auto_create_disabled(self):
+        IPAddress.objects.create(address=netaddr.IPNetwork('192.0.2.1/24'))
+        prefix = Prefix.objects.filter(prefix=netaddr.IPNetwork('192.0.2.0/24'))
+        self.assertEqual(len(prefix), 0)
+
+    @override_settings(AUTO_PREFIX_CREATE=True)
+    def test_prefix_auto_create_enabled(self):
+        IPAddress.objects.create(address=netaddr.IPNetwork('192.0.2.1/24'))
+        prefix = Prefix.objects.filter(prefix=netaddr.IPNetwork('192.0.2.0/24'))
+        self.assertEqual(len(prefix), 1)
+        IPAddress.objects.create(address=netaddr.IPNetwork('192.0.2.2/24'))
+        self.assertEqual(len(prefix), 1)
